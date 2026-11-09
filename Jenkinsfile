@@ -1,5 +1,10 @@
 
 pipeline {
+    
+    // Trigger Jenkins automatically when GitHub receives a push
+    triggers {
+        githubPush()
+    }
 
     // Jenkins will execute this pipeline on an available agent.
     agent any
