@@ -1,0 +1,48 @@
+# Kubernetes API version
+# v1 is the core API version used for Pods
+apiVersion: v1
+
+# Specifies the Kubernetes resource type
+# Here, we are creating a Pod
+kind: Pod
+
+# Metadata contains information about the Pod
+metadata:
+  # Name of the Pod
+  name: react-pod
+
+  # Labels are key-value pairs used to identify resources
+  labels:
+    app: react-app
+
+# Specification defines the desired configuration of the Pod
+spec:
+
+  # Containers that will run inside this Pod
+  containers:
+
+    # Name of the container
+    - name: react-container
+
+      # Docker image used to create the container
+      image: react-docker-app:latest
+
+      # Controls when Kubernetes pulls the Docker image
+      # IfNotPresent means:
+      # Pull the image only if it is not already available locally
+      imagePullPolicy: IfNotPresent
+
+      # Exposes the container's port information
+      ports:
+        # React application is expected to listen on port 80
+        - containerPort: 80
+
+# Cmd to create a pod 
+# kubectl apply -f pod.yml
+
+# Cmd to delete a pod
+# kubectl delete -f pod.yml
+
+# Cmd to list pods
+# kubectl get pods
+

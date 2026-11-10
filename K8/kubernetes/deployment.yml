@@ -1,0 +1,82 @@
+
+# ======================================
+# DEPLOYMENT
+# ======================================
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: react-deployment
+
+spec:
+  # Number of application replicas
+  replicas: 3
+
+  # Identifies the Pods managed by Deployment
+  selector:
+    matchLabels:
+      app: react-app
+
+  # Pod configuration
+  template:
+    metadata:
+      labels:
+        app: react-app
+
+    spec:
+      containers:
+        - name: react-container
+
+          # Docker image created by Jenkins
+          image: react-docker-app:latest
+
+          # Nginx container port
+          ports:
+            - containerPort: 80
+              name: http
+
+          imagePullPolicy: IfNotPresent
+
+
+---
+# ======================================
+# SERVICE
+# ======================================
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: react-service
+
+spec:
+  # Expose application outside the cluster
+  type: NodePort
+
+  # Connect Service to Deployment Pods
+  selector:
+    app: react-app
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+
+
+# Cmd to create a Deployment
+# kubectl apply -f deployment.yaml
+
+# Cmd to delete a Deployment
+# kubectl delete deployment deployment.yaml
+
+# Cmd to list Deployments
+# kubectl get deployments
+
+
+# Cmd to check rollout status of Deployment
+# kubectl rollout history deployment react-deployment
+
+#when deployment is created the service is also created automatically. To check the service created by deployment use the below command
+# kubectl get all

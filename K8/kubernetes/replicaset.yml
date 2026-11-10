@@ -1,0 +1,88 @@
+
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: react-replicaset
+
+spec:
+  # Number of application pods
+  replicas: 3
+
+  # Identifies the pods managed by this ReplicaSet
+  selector:
+    matchLabels:
+      app: react-app
+
+  # Pod configuration
+  template:
+    metadata:
+      labels:
+        app: react-app
+
+    spec:
+      containers:
+        - name: react-container
+
+          # Docker image created by Jenkins
+          image: react-docker-app:latest
+
+          # Container port exposed by Nginx
+          ports:
+            - containerPort: 80
+              name: http
+
+          # Always pull image from registry if available
+          imagePullPolicy: IfNotPresent
+
+
+# Cmd to create a ReplicaSet
+# kubectl apply -f replicaset.yaml
+
+# Cmd to delete a ReplicaSet
+# kubectl delete -f replicaset.yaml
+
+# Cmd to list ReplicaSet
+# kubectl get  rs (or) kubectl get replicaset
+
+# Cmd to delete a ReplicaSet 
+# kubectl delete replicaset react-replicaset
+
+# Cmd to delete a pod in a ReplicaSet
+# kubectl delete pod <pod-name>
+
+
+
+---
+# ======================================
+# SERVICE
+# ======================================
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: react-service
+
+spec:
+  # Exposes the application outside the cluster
+  type: NodePort
+
+  # Connects Service to React Pods
+  selector:
+    app: react-app
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+
+# Cmd to create a Service
+# kubectl apply -f replicaset.yaml
+
+# Cmd to list the services
+# kubectl get svc (or) kubectl get service
+
+# Cmd to get the service url
+# minikube service react-service --url
